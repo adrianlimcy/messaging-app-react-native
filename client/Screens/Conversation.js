@@ -1,7 +1,10 @@
 import React from 'react';
 import { Dimensions, Text, FlatList, ScrollView, View } from 'react-native';
+import {Query} from 'react-apollo'
 import styled from 'styled-components/native';
 import ConversationActions from '../Components/Conversation/ConversationActions';
+import Message from '../Components/Message/Message'
+import {GET_CONVERSATION} from '../constants'
 
 const ConversationWrapper = styled(View)`
   flex: 1;
@@ -33,11 +36,30 @@ const Conversation = ({ navigation }) => {
   return (
     <ConversationWrapper>
       <ConversationBody>
-        <ConversationBodyText>Loading...</ConversationBodyText>
+        <Query query={GET_CONVERSATION} variables={{userName}}>
+            {({loading, data})=>{
+                if (loading) {
+                  return <ConversationBodyText>Loading...</ConversationBodyText>
+                }
+
+                const { messages } = data.conversation
+                return (
+                  <MessagesList
+                    data={messages}
+                    keyExtractor = { item => String(item.id)}
+                    renderItem={({item})=>(
+                      <Message align={item.userName === 'me' ? 'left' : 'right'}>
+                        {item.text}
+                      </Message>
+                    )}
+                  />
+                )
+            }}
+        </Query>
       </ConversationBody>
       <ConversationActions userName={userName} />
     </ConversationWrapper>
-  );
-};
+  )
+}
 
 export default Conversation;
