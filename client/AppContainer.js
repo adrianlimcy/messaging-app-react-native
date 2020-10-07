@@ -1,12 +1,18 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { createAppContainer } from 'react-navigation';
+import { 
+  createAppContainer,
+  createSwitchContainer,
+  createSwitchNavigator
+} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Conversations from './Screens/Conversations';
 import Conversation from './Screens/Conversation';
 import Settings from './Screens/Settings';
+import Login from './Screens/Login'
+import AuthLoading from './Screens/AuthLoading'
 
 const ConversationsStack = createStackNavigator({
   Conversations: {
@@ -47,4 +53,15 @@ const TabNavigator = createBottomTabNavigator(
   },
 );
 
-export default createAppContainer(TabNavigator);
+const SwitchNavigator = createSwitchNavigator(
+  {
+    Main: TabNavigator,
+    Login,
+    AuthLoading
+  },
+  {
+    initialRouteName: 'AuthLoading'
+  }
+)
+
+export default createAppContainer(SwitchNavigator);

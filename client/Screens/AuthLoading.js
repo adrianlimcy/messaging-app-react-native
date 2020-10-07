@@ -1,5 +1,6 @@
+import { assertUnionType } from 'graphql';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { AsyncStorage, Text, View } from 'react-native';
 import styled from 'styled-components/native';
 
 const AuthLoadingWrapper = styled(View)`
@@ -14,10 +15,18 @@ const AuthLoadingText = styled(Text)`
   color: black;
 `;
 
-const AuthLoading = () => (
-  <AuthLoadingWrapper>
-    <AuthLoadingText>Loading...</AuthLoadingText>
-  </AuthLoadingWrapper>
-);
+const AuthLoading = ({navigation}) => {
+  React.useEffect(()=>{
+    AsyncStorage.getItem('token').then(value=>{
+      navigation.navigate(value ? 'Main' : 'Auth')
+    })
+  }, [navigation])
+
+  return (
+    <AuthLoadingWrapper>
+      <AuthLoadingText>Loading...</AuthLoadingText>
+    </AuthLoadingWrapper>
+  )
+}
 
 export default AuthLoading;
