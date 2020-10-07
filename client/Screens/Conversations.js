@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, Text, View } from 'react-native';
-import styled from 'styled-components/native';
 import {Query} from 'react-apollo'
+import styled from 'styled-components/native';
 import { GET_CONVERSATIONS } from '../constants'
 import ConversationItem from '../Components/Conversation/ConversationItem'
 
