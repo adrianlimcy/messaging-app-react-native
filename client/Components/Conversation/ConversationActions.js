@@ -1,11 +1,13 @@
 import React from 'react';
-import { Platform, View } from 'react-native';
+import { Platform, KeyboardAvoidingView, View } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useMutation } from 'react-apollo'
 import TextInput from '../TextInput/TextInput';
 import Button from '../Button/Button';
+import { SEND_MESSAGE } from '../../constants'
 
-const ConversationActionsWrapper = styled(View)`
+const ConversationActionsWrapper = styled(KeyboardAvoidingView)`
   width: 100%;
   background-color: #ccc;
   padding: 2%;
@@ -16,28 +18,38 @@ const ConversationActionsWrapper = styled(View)`
 `;
 
 const ConversationActions = ({ userName }) => {
+  const [sendMessage] = useMutation(SEND_MESSAGE)
   const [message, setMessage] = React.useState('');
 
   return (
-    <ConversationActionsWrapper>
-      <TextInput
-        width={75}
-        marginBottom={0}
-        onChangeText={setMessage}
-        placeholder='Your message'
-        value={message}
-      />
-      <Button
-        width={20}
-        padding={10}
-        title={
-          <Ionicons
-            name={`${Platform.OS === 'ios' ? 'ios' : 'md'}-send`}
-            size={42}
-            color='white'
-          />
-        }
-      />
+    <ConversationActionsWrapper
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 190 : 140}
+      behavior='padding'
+    >
+      <>
+        <TextInput
+          width={75}
+          marginBottom={0}
+          onChangeText={setMessage}
+          placeholder='Your message'
+          value={message}
+        />
+        <Button
+          width={20}
+          padding={10}
+          onPress={()=>{
+            sendMessage({variables: { to: userName, text: message}})
+            setMessage=('')
+          }}
+          title={
+            <Ionicons
+              name={`${Platform.OS === 'ios' ? 'ios' : 'md'}-send`}
+              size={42}
+              color='white'
+            />
+          }
+        />
+      </>
     </ConversationActionsWrapper>
   );
 };
